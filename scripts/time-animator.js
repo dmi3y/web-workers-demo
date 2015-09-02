@@ -2,7 +2,7 @@
   var canvas, context;
 
   init();
-  requestAnimationFrame(animate);
+  requestAnimationFrame(drawTime);
 
   function init() {
     canvas = document.createElement( 'canvas' );
@@ -13,10 +13,10 @@
   }
 
   // rAFing animation() in the event that more than the timer needs to be drawn
-  function animate() {
-    drawTime();
-    requestAnimationFrame(animate);
-  }
+  // function animate() {
+  //   drawTime();
+  //   requestAnimationFrame(animate);
+  // }
 
   // vars needed to compare diffs between frames
   var lastDiff = 0;
@@ -25,7 +25,7 @@
   var alpha = 1;
   var changeTime = 0;
 
-  function drawTime() {
+  function drawTime(stamp) {
 
     var days = [
       "Sunday",
@@ -52,7 +52,7 @@
       "December"
     ]
 
-    var now = new Date(Date.now());
+    var now = new Date(stamp);
 
     var year = now.getYear();
     var month = now.getMonth();
@@ -95,7 +95,10 @@
 
     context.font = '24px sans-serif';
     context.fillStyle = 'rgba(41,72,96,1)';
-    context.fillText("Date: " + dateString, 0, 50);
+    if ( lastDate !== dateString ) {
+
+      context.fillText("Date: " + dateString, 0, 50);
+    }
     context.fillText("Time: " + timeString, 0, 75);
 
     // fade out the "Jank Spotted" timer after 5 secs
@@ -111,6 +114,9 @@
 
     // save the data about this frame for future comparison
     lastTime = now;
+    var lastDate = dateString;
     lastDiff = frameTimeDiff;
+
+    requestAnimationFrame(drawTime);
   };
 })();
